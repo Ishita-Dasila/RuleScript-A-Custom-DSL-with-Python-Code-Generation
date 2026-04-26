@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>RuleScript Compiler Dashboard</title>
+  <style>
+    /* GLOBAL */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #ecfdf5, #f8fafc);
+    margin: 0;
+    color: #1e293b;
+}
+
+/* NAVBAR */
+nav {
+    background: rgba(22,163,74,0.9);
+    backdrop-filter: blur(12px);
+    padding: 0 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 65px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+nav ul a {
+    padding: 8px 14px;
+    border-radius: 8px;
+    transition: 0.25s;
+}
+
+nav ul a:hover {
+    background: rgba(255,255,255,0.2);
+}
+
+/* TITLE */
+h1 {
+    text-align: center;
+    margin: 20px 0 30px;
+    font-size: 2.3rem;
+    font-weight: 800;
+}
+
+/* SECTION CARDS */
+.section {
+    background: rgba(255,255,255,0.9);
+    border-radius: 16px;
+    padding: 20px;
+    margin: 20px auto;
+    width: 95%;
+    max-width: 1100px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.06);
+    transition: 0.3s;
+}
+
+.section:hover {
+    transform: translateY(-4px);
+}
+
+/* HEADINGS */
+h2 {
+    color: #166534;
+    margin-bottom: 10px;
+    font-size: 1.4rem;
+    border-left: 5px solid #22c55e;
+    padding-left: 10px;
+}
+
+/* TEXTAREA */
+textarea {
+    width: 100%;
+    height: 180px;
+    font-family: monospace;
+    font-size: 14px;
+    padding: 12px;
+    border-radius: 12px;
+    border: 1px solid #cbd5e1;
+    background: #f9fafb;
+    transition: 0.25s;
+}
+
+textarea:focus {
+    outline: none;
+    border-color: #22c55e;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(34,197,94,0.2);
+}
+
+/* BUTTON */
+button {
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: white;
+    padding: 11px 20px;
+    font-size: 14px;
+    border: none;
+    cursor: pointer;
+    margin-top: 12px;
+    border-radius: 10px;
+    font-weight: 600;
+    box-shadow: 0 10px 25px rgba(34,197,94,0.4);
+    transition: all 0.25s ease;
+}
+
+button:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 15px 35px rgba(34,197,94,0.6);
+}
+
+/* TABLE */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+th {
+    background: #16a34a;
+    color: white;
+    padding: 10px;
+    text-align: left;
+}
+
+td {
+    padding: 9px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+tr:nth-child(even) {
+    background: #f9fafb;
+}
+
+/* STATUS BADGES */
+.phase-status {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 12px;
+}
+
+.ok {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.fail {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+.wait {
+    background: #e2e8f0;
+    color: #475569;
+}
+
+/* OUTPUT BOXES */
+.error-box {
+    background: #fee2e2;
+    border: 1px solid #ef4444;
+    padding: 12px;
+    color: #b91c1c;
+    border-radius: 10px;
+    font-family: monospace;
+}
+
+.success-box {
+    background: #dcfce7;
+    border: 1px solid #22c55e;
+    padding: 12px;
+    color: #166534;
+    border-radius: 10px;
+}
+
+/* CODE BLOCK */
+pre {
+    background: #0f172a;
+    color: #e2e8f0;
+    border-radius: 12px;
+    padding: 15px;
+    font-size: 13px;
+    overflow-x: auto;
+}
+
+/* CHAT SECTION */
+#chat-box {
+    height: 320px;
+    overflow-y: auto;
+    border-radius: 12px;
+    padding: 12px;
+    background: #f9fafb;
+    border: 1px solid #e2e8f0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* CHAT MESSAGES */
+.chat-msg {
+    max-width: 75%;
+    padding: 10px 14px;
+    border-radius: 14px;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.chat-msg.user {
+    align-self: flex-end;
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: white;
+    border-bottom-right-radius: 4px;
+}
+
+.chat-msg.bot {
+    align-self: flex-start;
+    background: #e2e8f0;
+    color: #1e293b;
+    border-bottom-left-radius: 4px;
+}
+
+.chat-msg.thinking {
+    background: #f1f5f9;
+    color: #64748b;
+    font-style: italic;
+}
+
+/* CHAT INPUT */
+#chat-input-row {
+    display: flex;
+    align-items: center;   /* THIS fixes alignment */
+    gap: 8px;
+}
+
+#chat-input {
+    flex: 1;
+    height: 40px;          /* same height */
+    padding: 8px 12px;
+    font-size: 14px;
+    border-radius: 8px;
+    border: 1px solid #cbd5e1;
+    resize: none;
+    line-height: 1.4;
+    display: flex;
+    align-items: center;
+}
+
+#chat-send-btn {
+    height: 40px;          /* EXACT same height */
+    padding: 0 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 0;         /* remove extra spacing */
+}
+
+/* CLEAR BUTTON */
+#chat-clear-btn {
+    background: #64748b;
+}
+
+#chat-clear-btn:hover {
+    background: #475569;
+}
+.error-box {
+    background: #fff;
+    border: 1px solid #fecaca;
+    border-left: 6px solid #ef4444;
+    padding: 16px;
+    border-radius: 12px;
+}
+
+.error-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #b91c1c;
+    margin-bottom: 8px;
+}
+
+.error-msg {
+    font-family: monospace;
+    background: #fef2f2;
+    padding: 10px;
+    border-radius: 6px;
+    margin-bottom: 12px;
+    color: #7f1d1d;
+}
+
+.error-section {
+    margin-top: 10px;
+}
+
+.error-section strong {
+    display: block;
+    margin-bottom: 4px;
+    color: #111827;
+}
+
+.error-section p {
+    margin: 0;
+    color: #374151;
+    font-size: 14px;
+}
+/* AST TREE */
+/* AST TREE (ALWAYS EXPANDED) */
+.ast-node {
+    margin-left: 20px;
+    position: relative;
+    padding-left: 15px;
+}
+
+.ast-node::before {
+    content: ">";
+    position: absolute;
+    left: 0;
+    color: #16a34a;
+    font-size: 16px;
+}
+
+.ast-children {
+    margin-left: 15px;
+    border-left: 2px dashed #cbd5e1;
+    padding-left: 10px;
+}
+
+.ast-label {
+    background: #ecfdf5;
+    padding: 6px 10px;
+    border-radius: 8px;
+    display: inline-block;
+    margin: 4px 0;
+    font-size: 13px;
+    border: 1px solid #bbf7d0;
+}
+  </style>
+</head>
+<body>
+  <!-- Add this right after <body> tag in your existing dashboard.html -->
+
+<nav style="background-color:#4CAF50;padding:0 30px;display:flex;justify-content:space-between;align-items:center;height:60px;box-shadow:0 2px 5px rgba(0,0,0,0.2);margin-bottom:20px;">
+    <a href="index.html" style="color:white;font-size:22px;font-weight:bold;text-decoration:none;">RuleScript</a>
+    <ul style="display:flex;gap:10px;list-style:none;margin:0;padding:0;">
+        <li><a href="index.html" style="color:white;text-decoration:none;padding:8px 16px;border-radius:4px;font-size:15px;">Home</a></li>
+        <li><a href="about.html" style="color:white;text-decoration:none;padding:8px 16px;border-radius:4px;font-size:15px;">About</a></li>
+    </ul>
+    <div style="display:flex;align-items:center;gap:15px;">
+        <span id="userWelcome" style="color:white;font-size:14px;"></span>
+        <button type="button" onclick="logout()"
+style="background:rgba(255,255,255,0.2);color:white;border:1px solid rgba(255,255,255,0.5);padding:7px 16px;border-radius:4px;cursor:pointer;font-size:13px;">
+Logout
+</button>
+    </div>
+</nav>
+
+
+  <h1>RuleScript Compiler Dashboard</h1>
+
+  <!-- Input -->
+  <div class="section">
+    <h2>Source Code (.rules file)</h2>
+    <textarea id="source">RULE check_age
+IF age >= 18
+THEN eligible = True
+ELSE eligible = False
+
+RULE check_score
+IF score >= 50
+THEN result = True
+ELSE result = False
+
+RULE check_admin
+IF level >= 5
+THEN is_admin = True</textarea>
+    <br/>
+    <button onclick="runCompiler()">Compile</button>
+  </div>
+
+  <!-- Phase Status -->
+  <div class="section">
+    <h2>Compilation Phases</h2>
+    <table id="phase-table">
+      <tr>
+        <th>Phase</th>
+        <th>Name</th>
+        <th>Status</th>
+      </tr>
+      <tr>
+        <td>Phase 1</td>
+        <td>Lexical Analysis (Tokenizer)</td>
+        <td><span class="phase-status wait" id="p1">Waiting</span></td>
+      </tr>
+      <tr>
+        <td>Phase 2</td>
+        <td>Syntax Analysis (Parser)</td>
+        <td><span class="phase-status wait" id="p2">Waiting</span></td>
+      </tr>
+      <tr>
+        <td>Phase 3</td>
+        <td>AST Construction</td>
+        <td><span class="phase-status wait" id="p3">Waiting</span></td>
+      </tr>
+      <tr>
+        <td>Phase 4</td>
+        <td>Semantic Analysis</td>
+        <td><span class="phase-status wait" id="p4">Waiting</span></td>
+      </tr>
+      <tr>
+        <td>Phase 5</td>
+        <td>Code Generation</td>
+        <td><span class="phase-status wait" id="p5">Waiting</span></td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- Errors -->
+  <div class="section">
+    <h2>Errors</h2>
+    <div id="error-output"><p style="color:#888">No errors yet.</p></div>
+  </div>
+
+  <!-- Tokens -->
+  <div class="section">
+    <h2>Phase 1 — Tokens</h2>
+    <div id="token-output"><p style="color:#888">Run the compiler to see tokens.</p></div>
+  </div>
+
+  <!-- AST -->
+  <div class="section">
+    <h2>Phase 2 &amp; 3 — AST (Parsed Rules)</h2>
+    <div id="ast-output"><p style="color:#888">Run the compiler to see the AST.</p></div>
+  </div>
+
+  <!-- Semantic -->
+  <div class="section">
+    <h2>Phase 4 — Semantic Info</h2>
+    <div id="sem-output"><p style="color:#888">Run the compiler to see semantic info.</p></div>
+  </div>
+
+  <!-- Output Code -->
+  <div class="section">
+    <h2>Phase 5 — Generated Python Code</h2>
+    <pre id="code-output">Run the compiler to see generated code.</pre>
+  </div>
+
+  <!-- ── AI Agent Chat ── -->
+  <div class="section">
+    <h2>Ask Me — Compiler AI Agent</h2>
+    <p style="color:#555; font-size:14px; margin-top:0;">
+      Ask anything about this project or general compiler design theory!
+    </p>
+
+    <!-- Chat history display -->
+    <div id="chat-box">
+      <div class="chat-msg bot">Hi! I'm your RuleScript compiler assistant. Ask me anything about this project or compiler design theory — phases, errors, AST, code generation, and more!</div>
+    </div>
+
+    <!-- Input row -->
+    <div id="chat-input-row">
+      <textarea
+        id="chat-input"
+        rows="2"
+        placeholder="e.g. What is lexical analysis? / Explain the AST..."
+        onkeydown="handleChatKey(event)"
+      ></textarea>
+      <button id="chat-send-btn" onclick="sendChat()">Send</button>
+    </div>
+    <br/>
+    <button id="chat-clear-btn" onclick="clearChat()">Clear Chat</button>
+  </div>
+
+<script>
+  // Auth guard
+(function() {
+    const user = JSON.parse(localStorage.getItem('currentUser'));
+
+    if (!user) {
+        window.location.href = 'login.html?redirect=rulescript_dashboard.html';
+        return;
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('userWelcome').textContent =
+            'Welcome, ' + (user.name || 'User') + '!';
+    });
+})();
+
+function logout() {
+    localStorage.removeItem('currentUser');
+    localStorage.removeItem('isLoggedIn');
+    localStorage.removeItem('userName');
+    window.location.href = 'index.html';
+}
+
+  const T = { KW:'KEYWORD', ID:'IDENTIFIER', NUM:'NUMBER', OP:'OPERATOR', BOOL:'BOOLEAN', NL:'NEWLINE', EOF:'EOF' };
+
+  class LexerError    extends Error { constructor(m){ super(m); this.phase = 'Lexer';    } }
+  class ParseError    extends Error { constructor(m){ super(m); this.phase = 'Parser';   } }
+  class SemanticError extends Error { constructor(m){ super(m); this.phase = 'Semantic'; } }
+
+  function tokenize(src) {
+    const tokens = [];
+    let pos = 0, line = 1;
+    const patterns = [
+      [T.BOOL, /^(True|False)\b/],
+      [T.KW,   /^(RULE|IF|THEN|ELSE)\b/],
+      [T.NUM,  /^\d+/],
+      [T.OP,   /^(>=|<=|==|!=|>|<|=)/],
+      [T.ID,   /^[a-zA-Z_]\w*/],
+      [T.NL,   /^\n/],
+    ];
+    while (pos < src.length) {
+      const ch = src[pos];
+      if (ch === ' ' || ch === '\t' || ch === '\r') { pos++; continue; }
+      if (ch === '#') { while (pos < src.length && src[pos] !== '\n') pos++; continue; }
+      let matched = false;
+      const slice = src.slice(pos);
+      for (const [type, re] of patterns) {
+        const m = slice.match(re);
+        if (m) {
+          if (type === T.NL) line++;
+          tokens.push({ type, value: m[0], line });
+          pos += m[0].length;
+          matched = true; break;
+        }
+      }
+      if (!matched) throw new LexerError(`Unknown character '${ch}' at line ${line}`);
+    }
+    tokens.push({ type: T.EOF, value: 'EOF', line });
+    return tokens;
+  }
+
+  function parse(tokens) {
+    let pos = 0;
+    const cur  = () => tokens[pos];
+    const adv  = () => { const t = tokens[pos]; if (pos < tokens.length-1) pos++; return t; };
+    const skip = () => { while (cur().type === T.NL) adv(); };
+    function expect(type, val=null) {
+      const t = cur();
+      if (t.type !== type || (val && t.value !== val))
+        throw new ParseError(`Line ${t.line}: Expected ${val||type} but got '${t.value}'`);
+      return adv();
+    }
+    function parseCond() {
+      const l = expect(T.ID); const op = expect(T.OP);
+      const r = cur();
+      if (![T.NUM,T.BOOL,T.ID].includes(r.type)) throw new ParseError(`Line ${r.line}: Expected a value after operator`);
+      adv();
+      return { left: l.value, op: op.value, right: r.value };
+    }
+    function parseAssign() {
+      const v = expect(T.ID); expect(T.OP, '=');
+      const r = cur();
+      if (![T.NUM,T.BOOL,T.ID].includes(r.type)) throw new ParseError(`Line ${r.line}: Expected a value after '='`);
+      adv();
+      return { variable: v.value, value: r.value };
+    }
+    const rules = [];
+    skip();
+    while (cur().type !== T.EOF) {
+      const rt = expect(T.KW, 'RULE');
+      const name = expect(T.ID);
+      skip();
+      expect(T.KW, 'IF');  const cond = parseCond(); skip();
+      expect(T.KW, 'THEN'); const then = parseAssign(); skip();
+      let els = null;
+      if (cur().type === T.KW && cur().value === 'ELSE') { adv(); els = parseAssign(); skip(); }
+      rules.push({ name: name.value, line: rt.line, condition: cond, thenBody: then, elseBody: els });
+    }
+    return rules;
+  }
+
+  function analyse(rules) {
+    const ruleNames = new Set(), definedVars = new Set();
+    for (const rule of rules) {
+      if (ruleNames.has(rule.name)) throw new SemanticError(`Duplicate rule name '${rule.name}' at line ${rule.line}`);
+      ruleNames.add(rule.name);
+      definedVars.add(rule.condition.left);
+      const rhs = rule.condition.right;
+      if (!/^\d+$/.test(rhs) && rhs !== 'True' && rhs !== 'False' && !definedVars.has(rhs))
+        throw new SemanticError(`In rule '${rule.name}': variable '${rhs}' used but never defined`);
+      const chk = (v, where) => {
+        if (/^\d+$/.test(v) || v==='True' || v==='False' || definedVars.has(v)) return;
+        throw new SemanticError(`In rule '${rule.name}': value '${v}' in ${where} is undefined`);
+      };
+      chk(rule.thenBody.value, 'THEN');
+      definedVars.add(rule.thenBody.variable);
+      if (rule.elseBody) { chk(rule.elseBody.value, 'ELSE'); definedVars.add(rule.elseBody.variable); }
+    }
+    return { ruleNames: [...ruleNames], definedVars: [...definedVars] };
+  }
+
+  function codegen(rules) {
+    let out = '# Auto-generated by RuleScript Compiler\n\n';
+    for (const rule of rules) {
+      const { left, op, right } = rule.condition;
+      const tb = rule.thenBody, eb = rule.elseBody;
+      out += `def ${rule.name}(${left}):\n`;
+      out += `    if ${left} ${op} ${right}:\n`;
+      out += `        ${tb.variable} = ${tb.value}\n`;
+      if (eb) out += `    else:\n        ${eb.variable} = ${eb.value}\n`;
+      out += `    return ${tb.variable}\n\n`;
+    }
+    out += 'if __name__ == "__main__":\n';
+    for (const rule of rules)
+      out += `    print("${rule.name}(18) =>", ${rule.name}(18))\n`;
+    return out;
+  }
+
+  function setPhase(id, status) {
+    const el = document.getElementById(id);
+    if (status === 'ok')   { el.textContent = 'Passed';  el.className = 'phase-status ok';   }
+    if (status === 'fail') { el.textContent = 'Failed';  el.className = 'phase-status fail'; }
+    if (status === 'wait') { el.textContent = 'Waiting'; el.className = 'phase-status wait'; }
+  }
+
+  function resetAll() {
+    ['p1','p2','p3','p4','p5'].forEach(id => setPhase(id, 'wait'));
+    document.getElementById('error-output').innerHTML  = '<p style="color:#888">No errors yet.</p>';
+    document.getElementById('token-output').innerHTML  = '<p style="color:#888">Run the compiler to see tokens.</p>';
+    document.getElementById('ast-output').innerHTML    = '<p style="color:#888">Run the compiler to see the AST.</p>';
+    document.getElementById('sem-output').innerHTML    = '<p style="color:#888">Run the compiler to see semantic info.</p>';
+    document.getElementById('code-output').textContent = 'Run the compiler to see generated code.';
+  }
+
+  function showError(phase, message) {
+    const errorDiv = document.getElementById('error-output');
+
+    // Step 1: Show basic error immediately
+    errorDiv.innerHTML = `
+        <div class="error-box">
+            <div class="error-title">${phase} Error</div>
+            <div class="error-msg">${message}</div>
+            <p style="color:#666;">Getting detailed explanation...</p>
+        </div>
+    `;
+
+    // Step 2: Call AI
+    fetch('http://localhost:3000/ask', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            message: `Explain this compiler error:
+
+Error: ${message}
+
+Give structured output:
+1. What went wrong
+2. How to fix it
+3. Simple explanation`
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        const reply = data.reply || "";
+
+        // Step 3: Format nicely
+        const parts = reply.split(/\d\.\s+/);
+
+        errorDiv.innerHTML = `
+            <div class="error-box">
+                <div class="error-title">${phase} Error</div>
+
+                <div class="error-msg">${message}</div>
+
+                <div class="error-section">
+                    <strong>What went wrong</strong>
+                    <p>${parts[1] || "Not available"}</p>
+                </div>
+
+                <div class="error-section">
+                    <strong>How to fix</strong>
+                    <p>${parts[2] || "Not available"}</p>
+                </div>
+
+                <div class="error-section">
+                    <strong>Explanation</strong>
+                    <p>${parts[3] || "Not available"}</p>
+                </div>
+            </div>
+        `;
+    })
+    .catch(() => {
+        errorDiv.innerHTML += `<p style="color:red;">⚠️ Could not load AI explanation</p>`;
+    });
+}
+  function runCompiler() {
+    resetAll();
+    const src = document.getElementById('source').value;
+    let tokens, rules, semInfo, code;
+
+    // Phase 1 — Lexer
+    try {
+      tokens = tokenize(src);
+      setPhase('p1', 'ok');
+    } catch(e) {
+      setPhase('p1', 'fail');
+      showError('Lexer', e.message);
+      return;
+    }
+
+    // Token table
+    const visible = tokens.filter(t => t.type !== T.EOF);
+    let table = '<table><tr><th>#</th><th>Type</th><th>Value</th><th>Line</th></tr>';
+    visible.forEach((t, i) => {
+      table += `<tr><td>${i+1}</td><td>${t.type}</td><td><code>${t.value}</code></td><td>${t.line}</td></tr>`;
+    });
+    table += '</table>';
+    document.getElementById('token-output').innerHTML = table;
+
+    // Phase 2 — Parser
+    try {
+      rules = parse(tokens);
+      setPhase('p2', 'ok');
+    } catch(e) {
+      setPhase('p2', 'fail');
+      showError('Parser', e.message);
+      return;
+    }
+
+    // Phase 3 — AST
+   // Phase 3 — AST (INTERACTIVE)
+setPhase('p3', 'ok');
+
+function createNode(label, children = []) {
+    const node = document.createElement('div');
+    node.className = 'ast-node';
+
+    const labelDiv = document.createElement('div');
+    labelDiv.className = 'ast-label';
+    labelDiv.textContent = label;
+
+    node.appendChild(labelDiv);
+
+    if (children.length > 0) {
+        const childContainer = document.createElement('div');
+        childContainer.className = 'ast-children';
+
+        children.forEach(child => childContainer.appendChild(child));
+        node.appendChild(childContainer);
+    }
+
+    return node;
+}
+
+const astContainer = document.createElement('div');
+
+rules.forEach(rule => {
+    const cond = createNode(`Condition: ${rule.condition.left} ${rule.condition.op} ${rule.condition.right}`);
+
+    const thenNode = createNode(`THEN: ${rule.thenBody.variable} = ${rule.thenBody.value}`);
+
+    const elseNode = rule.elseBody
+        ? createNode(`ELSE: ${rule.elseBody.variable} = ${rule.elseBody.value}`)
+        : createNode(`ELSE: None`);
+
+    const ifNode = createNode('If Statement', [cond, thenNode, elseNode]);
+
+    const ruleNode = createNode(`Rule: ${rule.name}`, [ifNode]);
+
+    astContainer.appendChild(ruleNode);
+});
+
+const output = document.getElementById('ast-output');
+output.innerHTML = '';
+output.appendChild(astContainer);
+
+    // Phase 4 — Semantic
+    try {
+      semInfo = analyse(rules);
+      setPhase('p4', 'ok');
+      document.getElementById('sem-output').innerHTML = `
+        <div class="success-box">All semantic checks passed.</div>
+        <p style="margin-top:10px"><b>Rules defined:</b> ${semInfo.ruleNames.join(', ')}</p>
+        <p><b>Variables seen:</b> ${semInfo.definedVars.join(', ')}</p>`;
+    } catch(e) {
+      setPhase('p4', 'fail');
+      showError('Semantic', e.message);
+      return;
+    }
+
+    // Phase 5 — CodeGen
+    code = codegen(rules);
+    setPhase('p5', 'ok');
+    document.getElementById('code-output').textContent = code;
+
+    document.getElementById('error-output').innerHTML =
+      '<div class="success-box">Compilation successful! No errors found.</div>';
+  }
+
+  runCompiler();
+
+  //  AI Agent Chat Logic 
+
+  // Stores the conversation history for multi-turn chat
+  var chatHistory = [];
+
+  // Press Enter to send (Shift+Enter for new line)
+  function handleChatKey(event) {
+    if (event.key === 'Enter' && !event.shiftKey) {
+      event.preventDefault();
+      sendChat();
+    }
+  }
+
+  function appendMessage(role, text) {
+    var chatBox = document.getElementById('chat-box');
+    var div = document.createElement('div');
+    div.className = 'chat-msg ' + role;
+    div.textContent = text;
+    chatBox.appendChild(div);
+    // Auto-scroll to bottom
+    chatBox.scrollTop = chatBox.scrollHeight;
+    return div;
+  }
+
+  function sendChat() {
+    var input = document.getElementById('chat-input');
+    var message = input.value.trim();
+    if (!message) return;
+
+    // Show user message in the chat box
+    appendMessage('user', message);
+    input.value = '';
+
+    // Show a "thinking..." placeholder
+    var thinkingDiv = appendMessage('thinking', 'Thinking...');
+
+    // Disable the send button while waiting
+    var sendBtn = document.getElementById('chat-send-btn');
+    sendBtn.disabled = true;
+    sendBtn.textContent = '...';
+
+    // Call the /ask route on the local server
+    fetch('http://localhost:3000/ask', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        message: message,
+        history: chatHistory    // send full conversation history for multi-turn memory
+      })
+    })
+    .then(function(res) { return res.json(); })
+    .then(function(data) {
+      var reply = data.reply || 'No response received.';
+
+      // Remove the "Thinking..." placeholder
+      thinkingDiv.remove();
+
+      // Show the AI reply in the chat box
+      appendMessage('bot', reply);
+
+      // Save this turn to history so the AI remembers it next time
+      chatHistory.push({ role: 'user', content: message });
+      chatHistory.push({ role: 'assistant', content: reply });
+    })
+    .catch(function(err) {
+      thinkingDiv.remove();
+      appendMessage('bot', 'Error: Could not reach the server. Make sure server.js is running on port 3000.');
+      console.log('Chat error:', err);
+    })
+    .finally(function() {
+      // Re-enable the send button
+      sendBtn.disabled = false;
+      sendBtn.textContent = 'Send';
+    });
+  }
+
+  function clearChat() {
+    // Reset history and clear the chat box (keep the welcome message)
+    chatHistory = [];
+    var chatBox = document.getElementById('chat-box');
+    chatBox.innerHTML = '';
+    appendMessage('bot', 'Chat cleared! Ask me anything about this project or compiler design theory.');
+  }
+</script>
+</body>
+</html>

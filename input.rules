@@ -1,0 +1,28 @@
+# Rule 1: Check if a person is eligible based on age
+RULE check_age
+IF age >= 18
+THEN eligible = True
+ELSE eligible = False
+
+# Rule 2: Classify score as pass or fail
+RULE check_score
+IF score >= 50
+THEN result = True
+ELSE result = False
+
+# Rule 3: Check if a user is an admin (no ELSE branch)
+RULE check_admin
+IF level >= 5
+THEN is_admin = True
+
+# Rule 4: Check if discount applies
+RULE check_discount
+IF purchase >= 1000
+THEN discount = True
+ELSE discount = False
+
+# Rule 5: Check legal driving age
+RULE check_driving
+IF age >= 16
+THEN can_drive = True
+ELSE can_drive = False

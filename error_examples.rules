@@ -1,0 +1,50 @@
+#  ERROR EXAMPLE 1: Lexer Error 
+# Unrecognised character '@' in the source
+# Uncomment to test:
+# RULE bad_char
+# IF age @@ 18
+# THEN eligible = True
+
+
+#  ERROR EXAMPLE 2: Parse Error 
+# Missing THEN keyword after the condition
+# Uncomment to test:
+# RULE missing_then
+# IF age >= 18
+# eligible = True
+
+
+#  ERROR EXAMPLE 3: Parse Error 
+# Assignment uses == instead of = on the LHS
+# Uncomment to test:
+# RULE wrong_assign
+# IF age >= 18
+# THEN eligible == True
+
+
+#  ERROR EXAMPLE 4: Semantic Error — duplicate rule 
+# Two rules share the same name "check_age"
+# Uncomment to test:
+# RULE check_age
+# IF age >= 18
+# THEN eligible = True
+#
+# RULE check_age
+# IF score >= 50
+# THEN result = True
+
+
+#  ERROR EXAMPLE 5: Semantic Error — undefined variable 
+# 'ghost_var' was never assigned anywhere
+# Uncomment to test:
+# RULE check_ghost
+# IF age >= ghost_var
+# THEN eligible = True
+
+
+#  VALID (runs without error) 
+# This simple rule is always valid and acts as a baseline:
+RULE simple_check
+IF score >= 70
+THEN passed = True
+ELSE passed = False

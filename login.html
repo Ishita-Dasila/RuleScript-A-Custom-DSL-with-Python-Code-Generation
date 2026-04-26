@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login - RuleScript Compiler</title>
+<style>
+/* GLOBAL RESET */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #d1fae5, #f0fdf4);
+    min-height: 100vh;
+}
+
+/* NAVBAR */
+nav {
+    background: rgba(22,163,74,0.9);
+    backdrop-filter: blur(10px);
+    padding: 0 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 65px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+}
+
+.nav-logo {
+    color: white;
+    font-size: 24px;
+    font-weight: 700;
+    text-decoration: none;
+    letter-spacing: 0.5px;
+}
+
+.nav-links {
+    display: flex;
+    gap: 12px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: all 0.25s ease;
+}
+
+.nav-links a:hover {
+    background: rgba(255,255,255,0.2);
+    transform: translateY(-1px);
+}
+
+.nav-links a.active {
+    background: rgba(255,255,255,0.3);
+}
+
+/* CENTER WRAPPER */
+.auth-wrapper {
+    min-height: calc(100vh - 65px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 30px 20px;
+}
+
+/* MAIN CARD */
+.auth-box {
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(15px);
+    border-radius: 18px;
+    width: 100%;
+    max-width: 420px;
+    overflow: hidden;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.15);
+    border: 1px solid rgba(255,255,255,0.3);
+}
+
+/* TABS */
+.auth-tabs {
+    display: flex;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 16px;
+    border: none;
+    background: #f1f5f9;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    color: #64748b;
+    transition: all 0.25s ease;
+}
+
+.tab-btn:hover {
+    background: #e2e8f0;
+}
+
+.tab-btn.active {
+    background: white;
+    color: #16a34a;
+    border-bottom: 3px solid #16a34a;
+}
+
+/* FORM */
+.auth-form {
+    padding: 30px;
+}
+
+.auth-form h2 {
+    text-align: center;
+    color: #1e293b;
+    margin-bottom: 25px;
+    font-size: 1.6rem;
+}
+
+/* INPUT GROUP */
+.form-group {
+    margin-bottom: 18px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 6px;
+    color: #334155;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid #cbd5e1;
+    font-size: 14px;
+    transition: all 0.25s ease;
+    background: #f9fafb;
+}
+
+/* INPUT FOCUS EFFECT */
+.form-group input:focus {
+    outline: none;
+    border-color: #22c55e;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(34,197,94,0.2);
+}
+
+/* BUTTON */
+.auth-btn {
+    width: 100%;
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: white;
+    padding: 13px;
+    font-size: 15px;
+    font-weight: 600;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 25px rgba(34,197,94,0.4);
+}
+
+.auth-btn:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 15px 35px rgba(34,197,94,0.6);
+}
+
+/* ERROR + SUCCESS */
+.error-box {
+    background: #fee2e2;
+    border: 1px solid #ef4444;
+    padding: 10px;
+    color: #b91c1c;
+    font-size: 13px;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    display: none;
+}
+
+.success-box {
+    background: #dcfce7;
+    border: 1px solid #22c55e;
+    padding: 10px;
+    color: #166534;
+    font-size: 13px;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    display: none;
+}
+
+/* UTIL */
+.hidden {
+    display: none;
+}
+</style>
+</head>
+<body>
+
+<nav>
+    <a href="index.html" class="nav-logo">RuleScript</a>
+    <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="login.html" class="active">Login / Signup</a></li>
+    </ul>
+</nav>
+
+<div class="auth-wrapper">
+    <div class="auth-box">
+        <div class="auth-tabs">
+            <button class="tab-btn active" onclick="showTab('login')">Login</button>
+            <button class="tab-btn" onclick="showTab('signup')">Sign Up</button>
+        </div>
+
+        <!-- Login Form -->
+        <div id="loginForm" class="auth-form">
+            <h2>Welcome Back</h2>
+            <div id="loginError" class="error-box"></div>
+            <div class="form-group">
+                <label for="loginEmail">Email</label>
+                <input type="email" id="loginEmail" placeholder="you@example.com">
+            </div>
+            <div class="form-group">
+                <label for="loginPassword">Password</label>
+                <input type="password" id="loginPassword" placeholder="Enter your password">
+            </div>
+            <button class="auth-btn" onclick="handleLogin()">Login</button>
+        </div>
+
+        <!-- Signup Form -->
+        <div id="signupForm" class="auth-form hidden">
+            <h2>Create Account</h2>
+            <div id="signupError" class="error-box"></div>
+            <div id="signupSuccess" class="success-box"></div>
+            <div class="form-group">
+                <label for="signupName">Full Name</label>
+                <input type="text" id="signupName" placeholder="Your full name">
+            </div>
+            <div class="form-group">
+                <label for="signupEmail">Email</label>
+                <input type="email" id="signupEmail" placeholder="you@example.com">
+            </div>
+            <div class="form-group">
+                <label for="signupPassword">Password</label>
+                <input type="password" id="signupPassword" placeholder="Create a password">
+            </div>
+            <div class="form-group">
+                <label for="confirmPassword">Confirm Password</label>
+                <input type="password" id="confirmPassword" placeholder="Repeat your password">
+            </div>
+            <button class="auth-btn" onclick="handleSignup()">Sign Up</button>
+        </div>
+    </div>
+</div>
+
+<script>
+function showTab(tab) {
+    document.getElementById('loginForm').classList.toggle('hidden', tab !== 'login');
+    document.getElementById('signupForm').classList.toggle('hidden', tab !== 'signup');
+
+    document.querySelectorAll('.tab-btn').forEach((btn, i) => {
+        btn.classList.toggle('active', (i === 0 && tab === 'login') || (i === 1 && tab === 'signup'));
+    });
+}
+
+function getRedirect() {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('redirect') || 'rulescript_dashboard.html';
+}
+
+function showError(id, msg) {
+    const el = document.getElementById(id);
+    el.textContent = msg;
+    el.style.display = 'block';
+}
+
+function hideError(id) {
+    document.getElementById(id).style.display = 'none';
+}
+
+// VALIDATIONS
+function validateEmail(email) {
+    // Basic format check
+    const pattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+    if (!pattern.test(email)) return false;
+
+    // Extract domain
+    const domain = email.split('@')[1];
+
+    // Prevent cases like gmail..com or .gmail.com
+    if (domain.startsWith('.') || domain.includes('..')) return false;
+
+    // Allowed TLDs (important)
+    const validTLDs = [
+        "com", "in", "org", "net", "edu", "co", "ac", "io", "me", "dev"
+    ];
+
+    const tld = domain.split('.').pop().toLowerCase();
+
+    return validTLDs.includes(tld);
+}
+
+function validatePassword(password) {
+    return password.length >= 6 && /[a-zA-Z]/.test(password) && /[0-9]/.test(password);
+}
+
+// LOGIN
+function handleLogin() {
+    hideError('loginError');
+
+    const email = loginEmail.value.trim();
+    const password = loginPassword.value;
+
+    if (!email || !password) {
+        return showError('loginError', 'Please fill in all fields.');
+    }
+
+    let users = JSON.parse(localStorage.getItem("users")) || [];
+
+    let user = users.find(u => u.email === email && u.password === password);
+
+    if (!user) {
+        showError('loginError', 'No existing user. Please sign up first.');
+
+        // auto switch to signup after 1.5 sec
+        setTimeout(() => {
+            showTab('signup');
+        }, 1500);
+
+        return;
+    }
+
+    // login success
+    localStorage.setItem("currentUser", JSON.stringify(user));
+    window.location.href = getRedirect();
+}
+
+// SIGNUP
+function handleSignup() {
+    hideError('signupError');
+
+    const name = signupName.value.trim();
+    const email = signupEmail.value.trim();
+    const password = signupPassword.value;
+    const confirm = confirmPassword.value;
+
+    if (!name || !email || !password || !confirm) {
+        return showError('signupError', 'Please fill in all fields.');
+    }
+
+    if (name.length < 3) {
+        return showError('signupError', 'Name must be at least 3 characters.');
+    }
+
+    if (!validateEmail(email)) {
+        return showError('signupError', 'Enter a valid email.');
+    }
+
+    if (!validatePassword(password)) {
+        return showError('signupError', 'Password must be 6+ chars with letters & numbers.');
+    }
+
+    if (password !== confirm) {
+        return showError('signupError', 'Passwords do not match.');
+    }
+
+    let users = JSON.parse(localStorage.getItem("users")) || [];
+
+    // check existing user
+    if (users.find(u => u.email === email)) {
+        return showError('signupError', 'User already exists. Please login.');
+    }
+
+    // save user
+    const newUser = { name, email, password };
+    users.push(newUser);
+
+localStorage.setItem("users", JSON.stringify(users));
+localStorage.setItem("currentUser", JSON.stringify(newUser));
+localStorage.setItem("isLoggedIn", "true");
+localStorage.setItem("userName", newUser.name);
+
+window.location.href = getRedirect();
+}
+
+// ENTER KEY SUPPORT
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+        const loginHidden = document.getElementById('loginForm').classList.contains('hidden');
+        if (!loginHidden) handleLogin();
+        else handleSignup();
+    }
+});
+
+// AUTO REDIRECT IF LOGGED IN
+if (localStorage.getItem('currentUser')) {
+    window.location.href = getRedirect();
+}
+</script>
+</body>
+</html>

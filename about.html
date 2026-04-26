@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About - RuleScript Compiler</title>
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 0;
+}
+
+nav {
+    background-color: #4CAF50;
+    padding: 0 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 60px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.nav-logo {
+    color: white;
+    font-size: 22px;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.nav-links {
+    display: flex;
+    gap: 10px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-size: 15px;
+    transition: background 0.2s;
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+    background-color: rgba(255,255,255,0.2);
+}
+
+.page-content {
+    max-width: 960px;
+    margin: 30px auto;
+    padding: 0 20px;
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+    font-size: 2rem;
+    margin-bottom: 6px;
+}
+
+.page-subtitle {
+    text-align: center;
+    color: #777;
+    margin-bottom: 30px;
+    font-size: 15px;
+}
+
+.section {
+    background-color: white;
+    border: 1px solid #ccc;
+    padding: 25px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+}
+
+.section h2 {
+    color: #444;
+    border-bottom: 2px solid #aaa;
+    padding-bottom: 5px;
+    margin-bottom: 15px;
+}
+
+.section p {
+    color: #555;
+    line-height: 1.7;
+    font-size: 15px;
+    margin-bottom: 12px;
+}
+
+.benefits-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.benefit-card {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 18px;
+    border-top: 3px solid #4CAF50;
+}
+
+.benefit-card h3 {
+    color: #2e7d32;
+    margin-bottom: 8px;
+    font-size: 15px;
+}
+
+.benefit-card p {
+    color: #666;
+    font-size: 13px;
+    margin: 0;
+}
+
+.features-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.features-list li {
+    padding: 10px 0;
+    border-bottom: 1px solid #f0f0f0;
+    color: #555;
+    font-size: 14px;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.features-list li:last-child {
+    border-bottom: none;
+}
+
+.features-list li::before {
+    content: ">";
+    color: #4CAF50;
+    font-weight: bold;
+    flex-shrink: 0;
+}
+
+.phase-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 10px;
+}
+
+.phase-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    padding: 12px;
+    background: #f9f9f9;
+    border-radius: 5px;
+    border: 1px solid #eee;
+}
+
+.phase-num {
+    background-color: #4CAF50;
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 14px;
+    flex-shrink: 0;
+}
+
+.phase-info h4 {
+    color: #333;
+    margin: 0 0 4px 0;
+    font-size: 14px;
+}
+
+.phase-info p {
+    color: #666;
+    font-size: 13px;
+    margin: 0;
+}
+
+.cta-section {
+    text-align: center;
+    padding: 30px;
+    background: linear-gradient(135deg, #e8f5e9, #f1f8e9);
+    border: 1px solid #c8e6c9;
+    border-radius: 5px;
+    margin-bottom: 30px;
+}
+
+.cta-section h2 {
+    color: #2e7d32;
+    border: none;
+    margin-bottom: 10px;
+}
+
+.cta-section p {
+    color: #555;
+    margin-bottom: 20px;
+}
+
+.btn-primary {
+    background-color: #4CAF50;
+    color: white;
+    padding: 12px 30px;
+    font-size: 15px;
+    font-weight: bold;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: background 0.2s;
+}
+
+.btn-primary:hover {
+    background-color: #45a049;
+}
+</style>
+</head>
+<body>
+
+<nav>
+    <a href="index.html" class="nav-logo">RuleScript</a>
+    <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html" class="active">About</a></li>
+        <li id="authNavItem"><a href="login.html">Login / Signup</a></li>
+    </ul>
+</nav>
+
+<div class="page-content">
+    <h1>About RuleScript Compiler</h1>
+    <p class="page-subtitle">Everything you need to know about the project</p>
+
+    <!-- What it does -->
+    <div class="section">
+        <h2>What Is RuleScript?</h2>
+        <p>
+            RuleScript is a custom domain-specific language (DSL) compiler built to simplify
+            the creation of business rule logic. It takes human-readable rule definitions written
+            in a simple RULE / IF / THEN / ELSE syntax and compiles them into clean, executable
+            Python functions.
+        </p>
+        <p>
+            Instead of writing complex Python code manually, you write intuitive rules like
+            <code style="background:#f0f0f0;padding:2px 6px;border-radius:3px;">RULE check_age IF age >= 18 THEN eligible = True</code>
+            and the compiler handles the rest — tokenizing, parsing, analyzing, and generating
+            production-ready Python code automatically.
+        </p>
+    </div>
+
+    <!-- Benefits -->
+    <div class="section">
+        <h2>Key Benefits</h2>
+        <div class="benefits-grid">
+            <div class="benefit-card">
+                <h3>Simple Syntax</h3>
+                <p>Write business rules in plain English-like syntax without needing to know Python.</p>
+            </div>
+            <div class="benefit-card">
+                <h3>Instant Compilation</h3>
+                <p>Real-time compilation with phase-by-phase feedback directly in the browser.</p>
+            </div>
+            <div class="benefit-card">
+                <h3>Error Detection</h3>
+                <p>Detailed error messages pinpointing exactly which phase and line failed.</p>
+            </div>
+            <div class="benefit-card">
+                <h3>AI Assistant</h3>
+                <p>Built-in AI agent to explain compiler concepts and answer your questions.</p>
+            </div>
+            <div class="benefit-card">
+                <h3>Python Output</h3>
+                <p>Generates clean, readable Python functions ready for immediate use.</p>
+            </div>
+            <div class="benefit-card">
+                <h3>Educational</h3>
+                <p>Visualizes all 5 compiler phases to help you learn how compilers work.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Features -->
+    <div class="section">
+        <h2>Key Features</h2>
+        <ul class="features-list">
+            <li><strong>RULE / IF / THEN / ELSE</strong> keywords for natural rule definition</li>
+            <li><strong>Live compiler</strong> — type your rules and compile instantly in the browser</li>
+            <li><strong>5-phase pipeline</strong> — Lexer, Parser, AST, Semantic Analysis, Code Generation</li>
+            <li><strong>Token visualization</strong> — see every token with its type, value, and line number</li>
+            <li><strong>AST display</strong> — view the parsed rule structure clearly</li>
+            <li><strong>Semantic checks</strong> — detects duplicate rules and undefined variables</li>
+            <li><strong>Python code generation</strong> — outputs working Python def functions</li>
+            <li><strong>AI chat agent</strong> — powered by Groq LLaMA for compiler Q&amp;A</li>
+            <li><strong>Error recovery</strong> — clear error messages with phase identification</li>
+        </ul>
+    </div>
+
+    <!-- How it works -->
+    <div class="section">
+        <h2>How It Works — The 5 Phases</h2>
+        <div class="phase-steps">
+            <div class="phase-step">
+                <div class="phase-num">1</div>
+                <div class="phase-info">
+                    <h4>Lexical Analysis (Tokenizer)</h4>
+                    <p>Reads your source code and breaks it into tokens — keywords, identifiers, numbers, operators, and booleans.</p>
+                </div>
+            </div>
+            <div class="phase-step">
+                <div class="phase-num">2</div>
+                <div class="phase-info">
+                    <h4>Syntax Analysis (Parser)</h4>
+                    <p>Checks that tokens follow the correct grammar order. Raises an error if the structure is wrong.</p>
+                </div>
+            </div>
+            <div class="phase-step">
+                <div class="phase-num">3</div>
+                <div class="phase-info">
+                    <h4>AST Construction</h4>
+                    <p>Builds an Abstract Syntax Tree representing the logical structure of each rule.</p>
+                </div>
+            </div>
+            <div class="phase-step">
+                <div class="phase-num">4</div>
+                <div class="phase-info">
+                    <h4>Semantic Analysis</h4>
+                    <p>Checks the meaning — detects duplicate rule names and undefined variables. Issues warnings only.</p>
+                </div>
+            </div>
+            <div class="phase-step">
+                <div class="phase-num">5</div>
+                <div class="phase-info">
+                    <h4>Code Generation</h4>
+                    <p>Converts the AST into clean Python functions, ready to run or integrate into any project.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="cta-section">
+        <h2>Ready to Try It?</h2>
+        <p>Jump into the compiler and start writing your own rules right now.</p>
+        <a href="#" class="btn-primary" onclick="handleTry(event)">Try Our Compiler</a>
+    </div>
+</div>
+
+<script>
+function isLoggedIn() {
+    return localStorage.getItem('currentUser') !== null;
+}
+
+function handleTry(e) {
+    e.preventDefault();
+    if (isLoggedIn()) {
+        window.location.href = 'rulescript_dashboard.html';
+    } else {
+        window.location.href = 'login.html?redirect=rulescript_dashboard.html';
+    }
+}
+
+window.addEventListener('DOMContentLoaded', function() {
+    if (isLoggedIn()) {
+        document.getElementById('authNavItem').innerHTML =
+            `<a href="rulescript_dashboard.html">Dashboard</a>`;
+    }
+});
+</script>
+</body>
+</html>
