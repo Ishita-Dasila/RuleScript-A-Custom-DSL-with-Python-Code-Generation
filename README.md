@@ -7,7 +7,6 @@ RuleScript is a domain-specific programming language (DSL) built from scratch th
 The project also integrates an AI-powered assistant using a Groq API-based backend built with Node.js and Express. This assistant helps users debug compiler errors and understand compiler concepts through multi-turn conversational interaction.
 
 ---
----
 
 ## Repository
 
@@ -108,7 +107,7 @@ ELSE output_variable = result
 ### Keywords
 
 | Keyword | Description |
-
+|---|---|
 | RULE | Declares a new rule block |
 | IF | Begins the condition |
 | THEN | Action to take if condition is true |
@@ -161,7 +160,7 @@ The compiler uses a strict hard-error system. Compilation stops immediately upon
 ### Error Types
 
 | Stage | Error Type | Example Trigger |
-
+|---|---|---|
 | Lexical Analysis | LexerError | Invalid character such as @ in source |
 | Syntax Analysis | ParseError | Missing THEN keyword, wrong token order |
 | Semantic Analysis | SemanticError | Duplicate rule name, undefined variable |
@@ -171,7 +170,7 @@ The compiler uses a strict hard-error system. Compilation stops immediately upon
 ## Testing and Validation
 
 | Test Case | Status | Notes |
-
+|---|---|---|
 | Normal compilation with 5 rules | PASS | All 5 phases complete, output.py generated correctly |
 | Phase 1 Error: invalid character @ | PASS | LexerError raised at correct line |
 | Phase 2 Error: missing THEN keyword | PASS | ParseError raised at correct line |
@@ -264,4 +263,4 @@ Open `rulescript_dashboard.html` in a browser to view the interactive interface 
 
 ## License
 
-This project was developed as part of the Compiler Design course at Graphic Era (Deemed to be) University, Dehradun, by the CodeCrafters team (CD-VI-T166).
+This project was developed as part of the Compiler Design course at Graphic Era (Deemed to be) University, Dehradun. All rights reserved by the CodeCrafters team (CD-VI-T166).
