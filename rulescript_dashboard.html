@@ -818,12 +818,22 @@ output.appendChild(astContainer);
     var chatBox = document.getElementById('chat-box');
     var div = document.createElement('div');
     div.className = 'chat-msg ' + role;
-    div.textContent = text;
+
+    // User messages stay plain text
+    if (role === 'user') {
+        div.textContent = text;
+    } 
+    // Bot messages render markdown nicely
+    else {
+        div.innerHTML = marked.parse(text);
+    }
+
     chatBox.appendChild(div);
-    // Auto-scroll to bottom
+
+    // Auto scroll
     chatBox.scrollTop = chatBox.scrollHeight;
     return div;
-  }
+}
 
   function sendChat() {
     var input = document.getElementById('chat-input');
@@ -885,5 +895,6 @@ output.appendChild(astContainer);
     appendMessage('bot', 'Chat cleared! Ask me anything about this project or compiler design theory.');
   }
 </script>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </body>
 </html>
